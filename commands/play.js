@@ -81,7 +81,7 @@ module.exports.run = async ({client, message, args, queue}) => {
     }
   } else {
     serverQueue.songs.push(song);
-    if(serverQueue.songs.length > 0) play(message.guild, serverQueue.songs[0], queue);
+    if(serverQueue.songs.length == 1) play(message.guild, serverQueue.songs[0], queue);
     return message.channel.send(`${song.title} has been added to the queue!`);
   }
 
@@ -101,7 +101,7 @@ function play(guild, song, queue) {
     .play(ytdl(song.url))
     .on("finish", () => {
       serverQueue.songs.shift();
-      play(guild, serverQueue.songs[0]);
+      play(guild, serverQueue.songs[0], queue);
     })
     .on("error", error => console.error(error));
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
