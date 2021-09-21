@@ -3,7 +3,7 @@
 const Discord = require("discord.js");
 
 module.exports = { 
-  run: async (client, message, args) => {
+  run: async ({client, message, args}) => {
 
     const fileName = './audio/eu_tambem.mp3';
 
@@ -16,6 +16,7 @@ module.exports = {
           dispatcher.on('end', end => voiceChannel.leave());
       }).catch(err => console.log(err))
       // client.unlock()
-    }
+    },
+  type: 'audio'
   // }
 }

@@ -16,7 +16,7 @@ app.listen(process.env.PORT);
 
 const client = new Discord.Client();
 
-
+const queue = new Map();
 client.on("message", message => {
 
   // console.log(message.content.startsWith(`<@!${client.user.id}>`));
@@ -34,13 +34,25 @@ client.on("message", message => {
   try {
     const commandFile = require(`./commands/${command}.js`);
     console.log(commandFile);
-
-    commandFile.run(client, message, args);
+    if(isQueueEmpty(message.guild) == false && commandFile.type == 'audio') {
+      return message.channel.send(
+        "To ocupado agora seu mane!"
+      );
+    }
+    commandFile.run({client, message, args, queue});
   } catch(err) {
     console.error("Erro "+ err);
   }
 
 })
+
+function isQueueEmpty(guild) {
+  const serverQueue = queue.get(guild.id);
+  if(!serverQueue) return true;
+  if(serverQueue.songs.length == 0 ) return true;
+
+  return false;
+}
 
 
 client.login(process.env['TOKEN']);

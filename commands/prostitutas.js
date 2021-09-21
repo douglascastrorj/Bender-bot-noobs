@@ -9,7 +9,7 @@ function getRandomIntInclusive(min, max) {
 }
 
 module.exports = { 
-  run: async (client, message, args) => {
+  run: async ({client, message, args}) => {
 
     const files = ['bender_parque_tematico', 'bender_desembarque_lunar']
 
@@ -23,6 +23,7 @@ module.exports = {
           dispatcher.on('end', end => voiceChannel.leave());
       }).catch(err => console.log(err))
       // client.unlock()
-    }
+    },
+  type: 'audio'
   // }
 }

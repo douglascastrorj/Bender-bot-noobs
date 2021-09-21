@@ -1,9 +1,16 @@
 const Discord = require("discord.js");
 const ytdl = require('ytdl-core');
+var youtubesearchapi = require('youtube-search-api');
 
-const queue = new Map();
+async function searchYouTubeAsync(args) {
+   var video = await youtube.searchVideos(args.toString().replace(/,/g,' '));
+   console.log(video.url);
+   console.log(typeof String(video.url));
+   return String(video.url);
+}
 
-module.exports.run = async (client, message, args) => {
+
+module.exports.run = async ({client, message, args, queue}) => {
 
   const serverQueue = queue.get(message.guild.id);
 
@@ -21,16 +28,33 @@ module.exports.run = async (client, message, args) => {
     );
   }
 
-  const songInfo = await ytdl.getInfo(args[0]);
-  const song = {
-        title: songInfo.videoDetails.title,
-        url: songInfo.videoDetails.video_url,
-   };
+  let song = {};
 
+  if(args[0].startsWith("https://www.youtube") || args[0].startsWith("http://www.youtube")) {
+    const songInfo = await ytdl.getInfo(args[0]);
+    song = {
+      title: songInfo.videoDetails.title,
+      url: songInfo.videoDetails.video_url,
+    };
+  } else {
+    const videos = await youtubesearchapi.GetListByKeyword(args.join(" "))
+    if(videos.items && videos.items.length > 0) {
+      const firstVideo = videos.items[0];
+      song = {
+        title: firstVideo.title,
+        url: `https://www.youtube.com/watch?v=${firstVideo.id}`
+      }
 
-  console.log(song)
-  console.log(serverQueue)
+    } else {
+      return message.channel.send(`Nenhum resultado encontrado `);
+    }
+    // let url = await searchYouTubeAsync(args);
+    // console.log(url);
+    // let stream = ytdl(url, { filter: 'audioonly' });
+    // let dispatcher = connection.playStream(stream);
+  }
 
+  
 
   if (!serverQueue) {
     const queueContruct = {
@@ -49,7 +73,7 @@ module.exports.run = async (client, message, args) => {
     try {
       var connection = await voiceChannel.join();
       queueContruct.connection = connection;
-      play(message.guild, queueContruct.songs[0]);
+      play(message.guild, queueContruct.songs[0], queue);
     } catch (err) {
       console.log(err);
       queue.delete(message.guild.id);
@@ -57,13 +81,15 @@ module.exports.run = async (client, message, args) => {
     }
   } else {
     serverQueue.songs.push(song);
+    if(serverQueue.songs.length > 0) play(message.guild, serverQueue.songs[0], queue);
     return message.channel.send(`${song.title} has been added to the queue!`);
   }
 
 }
 
 
-function play(guild, song) {
+function play(guild, song, queue) {
+  if(!queue) return;
   const serverQueue = queue.get(guild.id);
   if (!song) {
     serverQueue.voiceChannel.leave();
@@ -82,12 +108,3 @@ function play(guild, song) {
   serverQueue.textChannel.send(`Start playing: **${song.title}**`);
 }
 
-function skip(message, serverQueue) {
-  if (!message.member.voice.channel)
-    return message.channel.send(
-      "You have to be in a voice channel to stop the music!"
-    );
-  if (!serverQueue)
-    return message.channel.send("There is no song that I could skip!");
-  serverQueue.connection.dispatcher.end();
-}
