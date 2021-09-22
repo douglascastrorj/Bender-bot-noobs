@@ -11,14 +11,14 @@ module.exports = {
         .setColor('#DAF7A6')
         .addFields(
             {name: 'Música',
-            value:"`!play <youtube_link>`\n`!play <nome da musica>`\n`!skip`"}
+            value:"`!play <youtube_link>`\n`!play <nome da musica>`\n`!skip`\n`!clear`\n`!queue`"}
         );
 
     let value = "";
     fs.readdirSync(testFolder).forEach(file => {
       const fileName = file.split(".js")[0]
 
-      if([ 'play', 'skip'].includes(fileName) == false) {
+      if([ 'play', 'skip', 'clear', 'queue'].includes(fileName) == false) {
         value += "`!"+ fileName +"`\n";
       }
     });

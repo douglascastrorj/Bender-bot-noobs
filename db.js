@@ -6,22 +6,33 @@ const AFINIDADE_KEY = `afinidade`;
 
 //message.author.username
 const getAfinidade = async (username) => {
-  const afinidade = JSON.pasrse(client.get(AFINIDADE_KEY));
+  const json = await client.get(AFINIDADE_KEY)
+  if(!json) return 0;
+
+  let afinidade = JSON.parse(json);
+  if(!afinidade) return 0;
+
   const userAfinidade = afinidade[username];
   return userAfinidade;
 }
 
 const setAfinidade = async ({username, valor}) => {
-  const afinidade = JSON.pasrse(client.get(AFINIDADE_KEY));
+  let json = await client.get(AFINIDADE_KEY);
+  if(!json) json = "{}";
+  const afinidade = JSON.parse(json);
+
+  console.log('afinidade do set ', afinidade)
   afinidade[username] = valor;
-  await Client.set(AFINIDADE_KEY, JSON.stringify(afinidade) );
+
+  console.log('afinidade depois de setada ', afinidade)
+  await client.set(AFINIDADE_KEY, JSON.stringify(afinidade) );
 }
 
 
 module.exports = { 
   client: client,
-  set: Client.set,
-  get: async (key) => { return await Client.get(key) },
+  set: client.set,
+  get: client.get,
   getAfinidade: getAfinidade,
   setAfinidade: setAfinidade
 }
