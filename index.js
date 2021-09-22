@@ -1,6 +1,7 @@
 const express = require('express');
 const config = require("./config.json");
 const Discord = require("discord.js");
+const speech = require('./speech.js');
 // const { DiscordSR } = require('discord-speech-recognition');
 
 
@@ -30,6 +31,7 @@ const client = new Discord.Client();
 //   // if(msg.content.starts)
 // })
 
+// speech.registerSpeechRecognition(client);
 
 const queue = new Map();
 client.on("message", async message => {
@@ -74,6 +76,8 @@ client.on("message", async message => {
   }
 
 })
+
+
 
 client.login(process.env['TOKEN']);
 

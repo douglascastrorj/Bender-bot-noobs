@@ -26,24 +26,30 @@ const googleSpeech = require('@google-cloud/speech')
 const googleSpeechClient = new googleSpeech.SpeechClient()
 
 
-function registerSpeechRecognition(discordClient) {
-  discordClient.on('presenceUpdate', async (oldPresence, newPresence) => {
-    console.log('New Presence:', newPresence)
+function registerSpeechRecognition(client) {
+  console.log('registering');
+  let a = client.on('voiceStateUpdate', async (oldPresence, newPresence) => {
+    // console.log('New Presence:', newPresence)
 
     const member = newPresence.member
     const presence = newPresence
     const memberVoiceChannel = member.voice.channel
 
-    if (!presence || !presence.activity || !presence.activity.name || !memberVoiceChannel) {
-      return
-    }
+    // if (!presence || !presence.activity || !presence.activity.name || !memberVoiceChannel) {
+    //   console.log('return')
+    //   return
+    // }
 
     const connection = await memberVoiceChannel.join()
     const receiver = connection.receiver
 
     connection.on('speaking', (user, speaking) => {
+
+      console.log('oi', user, speaking);
+
+      if(user.username != `douglascastrorj`) return;
       if (!speaking) {
-        return
+        return;
       }
 
       console.log(`I'm listening to ${user.username}`)
@@ -78,7 +84,7 @@ function registerSpeechRecognition(discordClient) {
       })
     })
   })
-
+  
 }
 
 
@@ -86,5 +92,5 @@ function registerSpeechRecognition(discordClient) {
 
 module.exports = { 
   ConvertTo1ChannelStream,
-  registerSpeechRecognition
+  registerSpeechRecognition: (client) => registerSpeechRecognition(client)
 }

@@ -13,6 +13,7 @@
   "dependencies": {
     "@discordjs/opus": "github:discordjs/opus",
     "@google-cloud/speech": "^4.9.0",
+    "@google-cloud/storage": "^5.14.2",
     "@replit/database": "^2.0.1",
     "annyang": "^2.6.1",
     "discord-speech-recognition": "^1.0.7",
