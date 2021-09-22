@@ -1,6 +1,10 @@
 const express = require('express');
 const config = require("./config.json");
 const Discord = require("discord.js");
+// const { DiscordSR } = require('discord-speech-recognition');
+
+
+// console.log(annyang.addComands);
 
 const db = require('./db.js');
 
@@ -17,6 +21,15 @@ app.listen(process.env.PORT);
 
 
 const client = new Discord.Client();
+// const discordSR = new DiscordSR(client);
+
+// client.on('speech', msg => {
+//   // msg.author.send(msg.content);
+//   console.log("speech", msg.content);
+
+//   // if(msg.content.starts)
+// })
+
 
 const queue = new Map();
 client.on("message", async message => {
