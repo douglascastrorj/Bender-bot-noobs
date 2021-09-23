@@ -5,12 +5,13 @@ const speech = require('./speech.js');
 const afinidade = require('./afinidade.js');
 const { DiscordSR } = require('discord-speech-recognition');
 
-
+///home/runner/Bender-bot-noobs/views
 // console.log(annyang.addComands);
 
 const db = require('./db.js');
 
 const app = express();
+app.set('view engine', 'pug');
 
 app.get("/", (request, response) => {
   const ping = new Date();
@@ -18,6 +19,8 @@ app.get("/", (request, response) => {
   
   response.sendStatus(200);
 });
+
+
 
 app.listen(process.env.PORT);
 

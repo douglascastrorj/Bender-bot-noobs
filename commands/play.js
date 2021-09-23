@@ -12,8 +12,6 @@ async function searchYouTubeAsync(args) {
 
 module.exports.run = async ({client, message, args, queue}) => {
 
-  console.log(queue)
-
   const serverQueue = queue.get(message.guild.id);
 
   // const args = message.content.split(" ");
@@ -94,7 +92,7 @@ function play(guild, song, queue) {
   if(!queue) return;
   const serverQueue = queue.get(guild.id);
   if (!song) {
-    serverQueue.voiceChannel.leave();
+    // serverQueue.voiceChannel.leave();
     queue.delete(guild.id);
     return;
   }
