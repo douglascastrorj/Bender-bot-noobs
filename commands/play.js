@@ -4,13 +4,15 @@ var youtubesearchapi = require('youtube-search-api');
 
 async function searchYouTubeAsync(args) {
    var video = await youtube.searchVideos(args.toString().replace(/,/g,' '));
-   console.log(video.url);
-   console.log(typeof String(video.url));
+  //  console.log(video.url);
+  //  console.log(typeof String(video.url));
    return String(video.url);
 }
 
 
 module.exports.run = async ({client, message, args, queue}) => {
+
+  console.log(queue)
 
   const serverQueue = queue.get(message.guild.id);
 
@@ -105,6 +107,8 @@ function play(guild, song, queue) {
     })
     .on("error", error => console.error(error));
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-  serverQueue.textChannel.send(`Start playing: **${song.title}**`);
+  try {
+    serverQueue.textChannel.send(`Start playing: **${song.title}**`);
+  } catch(e) {}
 }
 

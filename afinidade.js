@@ -14,7 +14,7 @@ const NAO_TO_AFIM_FRASES = [
 ]
 
 const  manageAfinidade = async ({message, command}) => {
-  const afinidade = await db.getAfinidade(message.author.username);
+  const afinidade = await db.getAfinidade(message.author.id);
   addAfinidade({message, command});
 
   const rand = getRandomIntInclusive(0, 100);
@@ -39,10 +39,10 @@ const addAfinidade = async ({message, command}) => {
   // console.log('afinidade ',afinidade);
 
   const alpha = 0.001;
-  const afinidade = await db.getAfinidade(message.author.username);
+  const afinidade = await db.getAfinidade(message.author.id);
   let newValue = afinidade + alpha;
   if(newValue > MAX_AFINIDADE) newValue = MAX_AFINIDADE;
-  await db.setAfinidade({username: message.author.username, valor: newValue});
+  await db.setAfinidade({username: message.author.id, valor: newValue});
   // console.log('afinidade ',afinidade);
 }
 

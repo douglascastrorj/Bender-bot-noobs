@@ -17,7 +17,6 @@ module.exports = {
     //   client.lock()
     const index = getRandomIntInclusive(0, 1);
       const voiceChannel = message.member.voice.channel;
-      console.log(voiceChannel)
       voiceChannel.join().then(connection => {
           const dispatcher = connection.play(`./audio/${files[index]}.mp3`);
           dispatcher.on('end', end => voiceChannel.leave());

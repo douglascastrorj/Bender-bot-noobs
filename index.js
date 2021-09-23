@@ -3,7 +3,7 @@ const config = require("./config.json");
 const Discord = require("discord.js");
 const speech = require('./speech.js');
 const afinidade = require('./afinidade.js');
-// const { DiscordSR } = require('discord-speech-recognition');
+const { DiscordSR } = require('discord-speech-recognition');
 
 
 // console.log(annyang.addComands);
@@ -21,11 +21,11 @@ app.get("/", (request, response) => {
 
 app.listen(process.env.PORT);
 
-
-const client = new Discord.Client();
 // const discordSR = new DiscordSR(client);
+// discordSR.speechOptions.lang = 'pt-BR'
 
 // client.on('speech', msg => {
+//   console.log(msg.author.username);
 //   // msg.author.send(msg.content);
 //   console.log("speech", msg.content);
 
@@ -35,6 +35,9 @@ const client = new Discord.Client();
 // speech.registerSpeechRecognition(client);
 
 const queue = new Map();
+
+const client = new Discord.Client();
+const discordSR = speech.registerSpeechRecognition({client, queue})
 client.on("message", async message => {
 
   // console.log(message.content.startsWith(`<@!${client.user.id}>`));

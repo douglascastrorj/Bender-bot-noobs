@@ -1,96 +1,59 @@
-const { Transform } = require('stream')
+const config = require("./config.json");
+const afinidade = require('./afinidade.js');
+const { DiscordSR } = require('discord-speech-recognition');
 
-function convertBufferTo1Channel(buffer) {
-  const convertedBuffer = Buffer.alloc(buffer.length / 2)
+const registerSpeechRecognition = ({client, queue}) => {
+  const discordSR = new DiscordSR(client);
+  discordSR.speechOptions.lang = 'pt-BR'
 
-  for (let i = 0; i < convertedBuffer.length / 2; i++) {
-    const uint16 = buffer.readUInt16LE(i * 4)
-    convertedBuffer.writeUInt16LE(uint16, i * 2)
-  }
+  client.on('voiceStateUpdate', async (oldPresence, newPresence) => {
+    client.on('speech', msg => {
+      if(!msg || !msg.content) return;
+      // console.log(msg);
 
-  return convertedBuffer
-}
+      // console.log(msg.author.username);
+      // msg.author.send(msg.content);
+      // console.log("speech", msg.content);
+      // console.log('\n');
 
-class ConvertTo1ChannelStream extends Transform {
-  constructor(source, options) {
-    super(options)
-  }
-
-  _transform(data, encoding, next) {
-    next(null, convertBufferTo1Channel(data))
-  }
-}
-
-const googleSpeech = require('@google-cloud/speech')
-
-const googleSpeechClient = new googleSpeech.SpeechClient()
+      try {
+        if(msg.content.startsWith(config.voice.prefix) == false) return;
 
 
-function registerSpeechRecognition(client) {
-  console.log('registering');
-  let a = client.on('voiceStateUpdate', async (oldPresence, newPresence) => {
-    // console.log('New Presence:', newPresence)
+        const [_, ...ask] = msg.content.split(config.voice.prefix)[1].split(' ');
+        // console.log("ask ",ask)
+        const [command, ...args] = ask;
+        // console.log('command ', command)
+        // console.log('args ', args)
+        const commands = config.voice.commands;
 
-    const member = newPresence.member
-    const presence = newPresence
-    const memberVoiceChannel = member.voice.channel
+        if(!commands[command]) return;
+        const commandFile = require(`./commands/${commands[command]}.js`);
 
-    // if (!presence || !presence.activity || !presence.activity.name || !memberVoiceChannel) {
-    //   console.log('return')
-    //   return
-    // }
+        const message = {
+         ...msg,
+         guild: msg.guild ,
+         member: {
+           voice: {
+             channel: msg.channel
+           }
+         }
+        }
+        commandFile.run({client, message, args, queue});
 
-    const connection = await memberVoiceChannel.join()
-    const receiver = connection.receiver
-
-    connection.on('speaking', (user, speaking) => {
-
-      console.log('oi', user, speaking);
-
-      if(user.username != `douglascastrorj`) return;
-      if (!speaking) {
-        return;
+      } catch (err) {
+        console.error(err);
       }
 
-      console.log(`I'm listening to ${user.username}`)
-
-      // this creates a 16-bit signed PCM, stereo 48KHz stream
-      const audioStream = receiver.createStream(user, { mode: 'pcm' })
-      const requestConfig = {
-        encoding: 'LINEAR16',
-        sampleRateHertz: 48000,
-        languageCode: 'pt-BR'
-      }
-      const request = {
-        config: requestConfig
-      }
-      const recognizeStream = googleSpeechClient
-        .streamingRecognize(request)
-        .on('error', console.error)
-        .on('data', response => {
-          const transcription = response.results
-            .map(result => result.alternatives[0].transcript)
-            .join('\n')
-            .toLowerCase()
-          console.log(`Transcription: ${transcription}`)
-        })
-
-      const convertTo1ChannelStream = new ConvertTo1ChannelStream()
-
-      audioStream.pipe(convertTo1ChannelStream).pipe(recognizeStream)
-
-      audioStream.on('end', async () => {
-        console.log('audioStream end')
-      })
+      // if(msg.content.starts)
     })
   })
-  
+
+
+  return discordSR;
 }
-
-
 
 
 module.exports = { 
-  ConvertTo1ChannelStream,
-  registerSpeechRecognition: (client) => registerSpeechRecognition(client)
+  registerSpeechRecognition: ({client, queue}) => registerSpeechRecognition({client, queue})
 }

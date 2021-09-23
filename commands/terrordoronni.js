@@ -8,7 +8,7 @@ module.exports = {
     // if (!client.isLocked() && message.content === 'Gotcha Bitch') {
     //   client.lock()
       const voiceChannel = message.member.voice.channel;
-      console.log(voiceChannel)
+      
       voiceChannel.join().then(connection => {
           const dispatcher = connection.play('./audio/doce_aroma.mp3')
           dispatcher.on('end', end => voiceChannel.leave());
