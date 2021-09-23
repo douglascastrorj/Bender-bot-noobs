@@ -2,6 +2,7 @@ const express = require('express');
 const config = require("./config.json");
 const Discord = require("discord.js");
 const speech = require('./speech.js');
+const afinidade = require('./afinidade.js');
 // const { DiscordSR } = require('discord-speech-recognition');
 
 
@@ -49,28 +50,20 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
 
   try {
-    // const afinidade = await db.getAfinidade(message.author.username);
-    // manageAfinidade(message);
 
-    // if(afinidade < 0.5) {
-    //   const rand = getRandomIntInclusive(0, 100);
-
-    //   if(rand < 30) {
-
-    //     return message.channel.send(
-    //       "Não to afim agora não meu consagrado, pode ser mais tarde ?"
-    //     );
-    //   }
-    // }
-
-    const commandFile = require(`./commands/${command}.js`);
+    // const canRunCommand = await afinidade.manageAfinidade({message, command});
+    const canRunCommand = true;
     
-    if(isQueueEmpty(message.guild) == false && commandFile.type == 'audio') {
-      return message.channel.send(
-        "To ocupado agora seu mane!"
-      );
+    if(canRunCommand) {
+      const commandFile = require(`./commands/${command}.js`);
+      
+      if(isQueueEmpty(message.guild) == false && commandFile.type == 'audio') {
+        return message.channel.send(
+          "To ocupado agora seu mane!"
+        );
+      }
+      commandFile.run({client, message, args, queue});
     }
-    commandFile.run({client, message, args, queue});
   } catch(err) {
     console.error("Erro "+ err);
   }
@@ -88,17 +81,4 @@ function isQueueEmpty(guild) {
   if(serverQueue.songs.length == 0 ) return true;
 
   return false;
-}
-
-const manageAfinidade = async (message) => {
-    const alpha = 0.005;
-    const afinidade = await db.getAfinidade(message.author.username);
-    await db.setAfinidade({username: message.author.username, valor: Math.max(afinidade + alpha, 1)});
-    // console.log('afinidade ',afinidade);
-}
-
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

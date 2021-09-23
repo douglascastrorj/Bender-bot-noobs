@@ -13,7 +13,7 @@ const getAfinidade = async (username) => {
   if(!afinidade) return 0;
 
   const userAfinidade = afinidade[username];
-  return userAfinidade;
+  return userAfinidade ? userAfinidade : 0;
 }
 
 const setAfinidade = async ({username, valor}) => {

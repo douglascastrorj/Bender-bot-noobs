@@ -1,23 +1,33 @@
-// Imports the Google Cloud client library.
-const {Storage} = require('@google-cloud/storage');
+// Imports the Google Cloud client library
+const speech = require('@google-cloud/speech');
+require('dotenv').config()
 
-// Instantiates a client. If you don't specify credentials when constructing
-// the client, the client library will look for credentials in the
-// environment.
-const storage = new Storage();
-// Makes an authenticated API request.
-async function listBuckets() {
-  try {
-    const results = await storage.getBuckets();
+// Creates a client
+const client = new speech.SpeechClient();
 
-    const [buckets] = results;
+async function quickstart() {
+  // The path to the remote LINEAR16 file
+  const gcsUri = 'gs://cloud-samples-data/speech/brooklyn_bridge.raw';
 
-    console.log('Buckets:');
-    buckets.forEach(bucket => {
-      console.log(bucket.name);
-    });
-  } catch (err) {
-    console.error('ERROR:', err);
-  }
+  // The audio file's encoding, sample rate in hertz, and BCP-47 language code
+  const audio = {
+    uri: gcsUri,
+  };
+  const config = {
+    encoding: 'LINEAR16',
+    sampleRateHertz: 16000,
+    languageCode: 'en-US',
+  };
+  const request = {
+    audio: audio,
+    config: config,
+  };
+
+  // Detects speech in the audio file
+  const [response] = await client.recognize(request);
+  const transcription = response.results
+    .map(result => result.alternatives[0].transcript)
+    .join('\n');
+  console.log(`Transcription: ${transcription}`);
 }
-listBuckets();
+quickstart();

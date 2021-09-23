@@ -18,7 +18,7 @@ module.exports = {
     fs.readdirSync(testFolder).forEach(file => {
       const fileName = file.split(".js")[0]
 
-      if([ 'play', 'skip', 'clear', 'queue'].includes(fileName) == false) {
+      if([ 'play', 'skip', 'clear', 'queue', 'setafinidade'].includes(fileName) == false) {
         value += "`!"+ fileName +"`\n";
       }
     });
