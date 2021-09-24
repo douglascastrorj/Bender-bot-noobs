@@ -20,6 +20,9 @@ app.get("/", (request, response) => {
   response.sendStatus(200);
 });
 
+app.get("/about", (request, response) => {
+  response.sendFile('views/about.html', {root: __dirname })
+})
 
 
 app.listen(process.env.PORT);
@@ -28,7 +31,7 @@ app.listen(process.env.PORT);
 const queue = new Map();
 
 const client = new Discord.Client();
-const discordSR = speech.registerSpeechRecognition({client, queue})
+// const discordSR = speech.registerSpeechRecognition({client, queue});
 client.on("message", async message => {
 
   // console.log(message.content.startsWith(`<@!${client.user.id}>`));
