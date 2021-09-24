@@ -18,11 +18,12 @@ module.exports = {
           name: `Tocando agora`,
           value: values.length > 0 ? values.filter( (v, index) => index == 0).join("\n") : "..."
         }
-    )
-    .addFields(
+    );
+
+    embed.addFields(
         {
           name: `Próximas`,
-          value: values.length > 0 ? values.filter( (v, index) => index > 0).join("\n") : "..."
+          value: values.length > 1 ? values.filter( (v, index) => index > 0).join("\n") : "..."
         }
     );
 
