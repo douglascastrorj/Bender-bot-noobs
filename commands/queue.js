@@ -7,7 +7,7 @@ module.exports = {
 
     let values = [];
     if(serverQueue && serverQueue.songs) {
-      values = serverQueue.songs.map( song => "`" + song.title + "`");
+      values = serverQueue.songs.map( (song, index) => "`" + (index + 1) + ": " + song.title + "`");
     }
 
     const embed = new Discord.MessageEmbed()
@@ -15,8 +15,14 @@ module.exports = {
     .setColor('#DAF7A6')
     .addFields(
         {
-          name: `${values.length} Música(s) na Playlist`,
-          value: values.length > 0 ? values.join("\n") : "..."
+          name: `Tocando agora`,
+          value: values.length > 0 ? values.filter( (v, index) => index == 0).join("\n") : "..."
+        }
+    )
+    .addFields(
+        {
+          name: `Próximas`,
+          value: values.length > 0 ? values.filter( (v, index) => index > 0).join("\n") : "..."
         }
     );
 

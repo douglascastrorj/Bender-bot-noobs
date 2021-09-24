@@ -82,7 +82,11 @@ module.exports.run = async ({client, message, args, queue}) => {
   } else {
     serverQueue.songs.push(song);
     if(serverQueue.songs.length == 1) play(message.guild, serverQueue.songs[0], queue);
-    return message.channel.send(`${song.title} has been added to the queue!`);
+    try {
+      return message.channel.send(`${song.title} has been added to the queue!`);
+    } catch(e) {
+      return;
+    }
   }
 
 }

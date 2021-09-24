@@ -24,18 +24,6 @@ app.get("/", (request, response) => {
 
 app.listen(process.env.PORT);
 
-// const discordSR = new DiscordSR(client);
-// discordSR.speechOptions.lang = 'pt-BR'
-
-// client.on('speech', msg => {
-//   console.log(msg.author.username);
-//   // msg.author.send(msg.content);
-//   console.log("speech", msg.content);
-
-//   // if(msg.content.starts)
-// })
-
-// speech.registerSpeechRecognition(client);
 
 const queue = new Map();
 
