@@ -16,16 +16,18 @@ module.exports = {
     .addFields(
         {
           name: `Tocando agora`,
-          value: values.length > 0 ? values.filter( (v, index) => index == 0).join("\n") : "..."
+          value: values.length > 0 ? values.filter( (v, index) => index == 0).join("\n") : "Nenhuma música na playlist."
         }
     );
 
-    embed.addFields(
-        {
-          name: `Próximas`,
-          value: values.length > 1 ? values.filter( (v, index) => index > 0).join("\n") : "..."
-        }
-    );
+    if(values.length > 1) {
+      embed.addFields(
+          {
+            name: `Próximas`,
+            value: values.length > 1 ? values.filter( (v, index) => index > 0).join("\n") : "..."
+          }
+      );
+    }
 
 
     message.channel.send(embed);
