@@ -6,7 +6,7 @@ const registerSpeechRecognition = ({client, queue}) => {
   const discordSR = new DiscordSR(client);
   discordSR.speechOptions.lang = 'pt-BR'
 
-  client.on('voiceStateUpdate', async (oldPresence, newPresence) => {
+  // client.on('voiceStateUpdate', async (oldPresence, newPresence) => {
     client.on('speech', msg => {
       if(!msg || !msg.content) return;
 
@@ -65,7 +65,7 @@ const registerSpeechRecognition = ({client, queue}) => {
 
       // if(msg.content.starts)
     })
-  })
+  // })
 
 
   return discordSR;

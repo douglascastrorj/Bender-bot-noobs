@@ -1,5 +1,14 @@
 const db = require('./db.js')
 
+const discriminators = {
+  guto: '1564',
+  bananinha: '1640',
+  doug: '8367',
+  robo: '6480',
+  jonas: '6699',
+  ronni: '3346'
+}
+
 const MAX_AFINIDADE = 1;
 
 const NAO_TO_AFIM_FRASES = [
@@ -54,5 +63,6 @@ function getRandomIntInclusive(min, max) {
 
 
 module.exports = {
-  manageAfinidade
+  manageAfinidade,
+  discriminators
 }
