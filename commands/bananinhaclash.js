@@ -10,7 +10,7 @@ module.exports = {
       const voiceChannel = message.member.voice.channel;
       // console.log(voiceChannel)
       voiceChannel.join().then(connection => {
-          const dispatcher = connection.play('./audio/rei_dos_trolls_passando.mp3')
+          const dispatcher = connection.play('./audio/bananinhaclash.mp3')
           dispatcher.on('end', end => voiceChannel.leave());
       }).catch(err => console.log(err))
       // client.unlock()
